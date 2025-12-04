@@ -32,16 +32,11 @@ const Quiz = () => {
       if (type === 'code') {
         // Try AI first, fallback to mock
         const aiResult = await generateQuizCode();
-        if (aiResult.data?.questions) {
-          quizQuestions = aiResult.data.questions;
-        } else {
-          quizQuestions = generateMockQuizCode();
-          toast({
-            title: 'Mode hors-ligne',
-            description: 'Quiz généré localement',
-            variant: 'default',
-          });
-        }
+       if (aiResult.data?.questions) {
+  quizQuestions = aiResult.data.questions;
+} else {
+  throw new Error('Aucune donnée IA reçue');
+}
       } else {
         // Quiz inspiration - based on viewed inspirations
         if (viewedInspirations.length === 0) {
