@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 exports.handler = async (event, context) => {
@@ -109,14 +111,13 @@ Réponds :
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "llama-3.1-70b-versatile",
+        model: "llama-3.3-70b-versatile",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
         temperature: 0.7,
-        max_tokens: 4000,
-        response_format: { type: "json_object" },
+        max_tokens: 4000
       }),
     });
 

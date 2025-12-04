@@ -21,51 +21,35 @@ const Inspiration = () => {
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    
-    try {
-      // Try AI first
-      const aiResult = await generateAIInspiration();
-      
-      let newInspiData;
-      if (aiResult.data) {
-        newInspiData = aiResult.data;
-        toast({
-          title: 'Nouvelle inspiration',
-          description: 'Générée par IA',
-        });
-      } else {
-        // Fallback to mock
-        newInspiData = generateMockInspiration();
-        toast({
-          title: 'Mode hors-ligne',
-          description: 'Inspiration générée localement',
-          variant: 'default',
-        });
-      }
-      
-      const newInspi = { 
-        ...newInspiData, 
-        id: crypto.randomUUID(), 
-        date: today 
-      };
-      
-      // Save and update state
-      saveInspiration(today, newInspi);
-      setInspiration(newInspi);
-      
-    } catch (error) {
-      console.error('Refresh error:', error);
-      // Fallback to mock on error
-      const mock = generateMockInspiration();
-      const newInspi = { ...mock, id: crypto.randomUUID(), date: today };
-      saveInspiration(today, newInspi);
-      setInspiration(newInspi);
-    } finally {
-      setIsRefreshing(false);
+const handleRefresh = async () => {
+  setIsRefreshing(true);
+
+  try {
+    const aiResult = await generateAIInspiration();
+
+    let newInspiData;
+    if (aiResult.data) {
+      newInspiData = aiResult.data;
+      toast({ title: 'Nouvelle inspiration IA' });
+    } else {
+      newInspiData = generateMockInspiration();
+      toast({ title: 'Mode hors-ligne', description: 'Inspiration générée localement' });
     }
-  };
+
+    const newId = crypto.randomUUID();
+    const newDateKey = `${today}-${newId}`;
+    const newInspi = { ...newInspiData, id: newId, date: newDateKey };
+
+    saveInspiration(newDateKey, newInspi);
+    setInspiration(newInspi);
+
+  } catch (error) {
+    console.error('Refresh error:', error);
+  } finally {
+    setIsRefreshing(false);
+  }
+};
+
 
   const Section = ({ icon: Icon, title, gradient, children }: { icon: any; title: string; gradient: string; children: React.ReactNode }) => (
     <div className="glass-card p-5 animate-scale-in">
