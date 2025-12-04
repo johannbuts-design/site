@@ -27,14 +27,18 @@ const handleRefresh = async () => {
   try {
     const aiResult = await generateAIInspiration();
 
-    let newInspiData;
-    if (aiResult.data) {
-      newInspiData = aiResult.data;
-      toast({ title: 'Nouvelle inspiration IA' });
-    } else {
-      newInspiData = generateMockInspiration();
-      toast({ title: 'Mode hors-ligne', description: 'Inspiration générée localement' });
-    }
+    if (!aiResult.data) {
+  toast({
+    title: 'Erreur IA',
+    description: 'Impossible de générer l’inspiration depuis l’IA.',
+    variant: 'destructive',
+  });
+  return;
+}
+
+const newInspiData = aiResult.data;
+toast({ title: 'Nouvelle inspiration IA' });
+
 
     const newId = crypto.randomUUID();
     const newDateKey = `${today}-${newId}`;
